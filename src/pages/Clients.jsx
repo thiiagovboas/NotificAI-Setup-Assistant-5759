@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiUser, FiPhone, FiMail, FiCalendar, FiPlus } from 'react-icons/fi';
-import { Button } from '../components/Button';
-import { Input } from '../components/Input';
+import { FiUser, FiPlus } from 'react-icons/fi';
+import ClientForm from '../components/ClientForm';
 import Toast from '../components/Toast';
 import FilterBar from '../components/FilterBar';
-import GradientButton from '../components/GradientButton';
+import ClientCard from '../components/ClientCard';
 import ClientDetailModal from '../components/ClientDetailModal';
 import { fakeClients } from '../data/fakeData';
+import GradientButton from '../components/GradientButton';
 
 const Clients = () => {
   const [clients, setClients] = useState(fakeClients);
@@ -16,6 +16,34 @@ const Clients = () => {
   const [selectedClient, setSelectedClient] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [toast, setToast] = useState(null);
+
+  const handleAddClient = (newClient) => {
+    setClients([...clients, newClient]);
+    setToast({
+      type: 'success',
+      message: 'Cliente adicionado com sucesso!'
+    });
+  };
+
+  const handleEditClient = (updatedClient) => {
+    setClients(clients.map(client => 
+      client.id === updatedClient.id ? updatedClient : client
+    ));
+    setToast({
+      type: 'success',
+      message: 'Cliente atualizado com sucesso!'
+    });
+    setSelectedClient(null);
+  };
+
+  const handleDeleteClient = (clientId) => {
+    setClients(clients.filter(client => client.id !== clientId));
+    setToast({
+      type: 'warning',
+      message: 'Cliente removido com sucesso!'
+    });
+    setSelectedClient(null);
+  };
 
   const filteredClients = clients
     .filter(client => 
@@ -26,14 +54,6 @@ const Clients = () => {
       const compare = a.nome.localeCompare(b.nome);
       return sortOrder === 'asc' ? compare : -compare;
     });
-
-  const handleDelete = (clientId) => {
-    setClients(clients.filter(client => client.id !== clientId));
-    setToast({
-      type: 'warning',
-      message: 'Cliente removido com sucesso!'
-    });
-  };
 
   return (
     <div className="p-6">
@@ -65,58 +85,27 @@ const Clients = () => {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredClients.map((client) => (
-          <motion.div
+          <ClientCard
             key={client.id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+            client={client}
             onClick={() => setSelectedClient(client)}
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <div className="bg-primary-100 p-3 rounded-full">
-                  <FiUser className="text-primary-600 w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-800">{client.nome}</h3>
-                  <p className="text-sm text-gray-500">
-                    Cliente desde {new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 space-y-2">
-              <div className="flex items-center gap-2 text-gray-600">
-                <FiPhone className="w-4 h-4" />
-                <span className="text-sm">{client.telefone}</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-600">
-                <FiMail className="w-4 h-4" />
-                <span className="text-sm">{client.email}</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-600">
-                <FiCalendar className="w-4 h-4" />
-                <span className="text-sm">
-                  {new Date(client.dataNascimento).toLocaleDateString('pt-BR')}
-                </span>
-              </div>
-            </div>
-          </motion.div>
+          />
         ))}
       </div>
+
+      {showForm && (
+        <ClientForm
+          onClose={() => setShowForm(false)}
+          onSubmit={handleAddClient}
+        />
+      )}
 
       {selectedClient && (
         <ClientDetailModal
           client={selectedClient}
           onClose={() => setSelectedClient(null)}
-          onEdit={() => {
-            // Handle edit functionality
-            setSelectedClient(null);
-          }}
-          onDelete={() => {
-            handleDelete(selectedClient.id);
-            setSelectedClient(null);
-          }}
+          onEdit={handleEditClient}
+          onDelete={handleDeleteClient}
         />
       )}
     </div>
