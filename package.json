@@ -1,31 +1,28 @@
 {
-  "name": "vite-react-starter",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "name": "notificai-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "ts-node-dev --transpile-only --ignore-watch node_modules src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
   },
   "dependencies": {
-    "@questlabs/react-sdk": "^2.1.1",
-    "react": "^18.2.0",
-    "react-router-dom": "^6.22.0",
-    "react-dom": "^18.2.0",
-    "framer-motion": "^11.0.8",
-    "react-icons": "^5.0.1"
+    "@prisma/client": "^5.10.2",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.3",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.2.1",
-    "autoprefixer": "^10.4.17",
-    "eslint": "^8.56.0",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.5",
-    "postcss": "^8.4.35",
-    "tailwindcss": "^3.4.1",
-    "vite": "^5.1.0"
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^20.11.24",
+    "prisma": "^5.10.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3"
   }
 }
